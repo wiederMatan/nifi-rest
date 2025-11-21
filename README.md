@@ -1,86 +1,152 @@
-# NiFi REST API - Basic Setup
+# NiFi REST API - Professional Setup
 
-Simple Docker-based Apache NiFi 2.6.0 setup with REST API scripts.
+Enterprise-grade Apache NiFi 2.6.0 automation with organized scripts and comprehensive documentation.
 
-## Quick Start
-
-1. **Start NiFi:**
-   ```bash
-   docker-compose up -d
-   ```
-
-2. **Wait 2-3 minutes for NiFi to start**
-
-3. **Access NiFi UI:**
-   ```
-   https://localhost:8443/nifi
-   ```
-   Login: `admin` / `adminadminadmin`
-
-## Create a Basic Flow (Easiest Way)
+## Quick Start (3 Commands)
 
 ```bash
-./create_basic_flow.sh
+# 1. Setup NiFi Docker container
+./scripts/01_setup_nifi.sh
+
+# 2. Create sample flow
+./scripts/02_create_sample_flow.sh
+
+# 3. Start the flow
+./scripts/03_push_flow.sh
 ```
 
-This creates a simple flow: GenerateFlowFile → LogAttribute
-
-**Then start it:**
-```bash
-./start_processors.sh
-```
-
-**See complete guide:** [BASIC_FLOW_GUIDE.md](BASIC_FLOW_GUIDE.md)
+Then open: https://localhost:8443/nifi (Login: `admin` / `adminadminadmin`)
 
 ---
 
-## API Usage
+## Project Structure
 
-### Get Authentication Token
-```bash
-./get_token.sh
+```
+nifi-rest/
+├── scripts/
+│   ├── 01_setup_nifi.sh          # TASK 1: First-time setup
+│   ├── 02_create_sample_flow.sh  # TASK 2: Create sample flow
+│   ├── 03_push_flow.sh           # TASK 3: Start/push flow
+│   ├── core/                     # Reusable flow creators
+│   └── utils/                    # Helper utilities
+├── docs/                         # Documentation
+├── docker-compose.yml            # NiFi container config
+└── .env.example                  # Environment template
 ```
 
-### List Processors
+See [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) for complete details.
+
+---
+
+## Three Main Tasks
+
+### Task 1: Setup & Connect NiFi
+
 ```bash
-./list_processors.sh
+./scripts/01_setup_nifi.sh
 ```
 
-### Create Advanced Flow
+**What it does:**
+- ✅ Checks Docker prerequisites
+- ✅ Creates `.env` file
+- ✅ Starts NiFi container
+- ✅ Waits for NiFi to initialize
+- ✅ Tests API connection
+- ✅ Verifies authentication
+
+**Output:** NiFi running at https://localhost:8443
+
+---
+
+### Task 2: Create Sample Flow
+
 ```bash
-./create_and_push_flow.sh
-```
-Creates: HTTP Listener → Route → Transform → Store flow
-
-### Create Connection Between Processors
-```bash
-./create_connection.sh
-```
-Edit the script to set your processor IDs first.
-
-## Files
-
-- `docker-compose.yml` - NiFi 2.6.0 container setup
-- `.env.example` - Environment variables (copy to `.env`)
-- `get_token.sh` - Get JWT authentication token
-- `list_processors.sh` - List all processors
-- `create_basic_flow.sh` - ⭐ **Create simple basic flow**
-- `start_processors.sh` - Start all processors
-- `create_and_push_flow.sh` - Create advanced data flow
-- `create_connection.sh` - Connect two processors
-- `SETUP.md` - Detailed setup instructions
-- `BASIC_FLOW_GUIDE.md` - Complete flow creation guide
-
-## Environment Variables
-
-Copy `.env.example` to `.env` and customize:
-```bash
-cp .env.example .env
+./scripts/02_create_sample_flow.sh
 ```
 
-Default credentials:
+**What it creates:**
+```
+┌──────────────────────┐
+│ Generate Sample Data │  (1KB every 60 sec)
+└──────────┬───────────┘
+           │ success
+           ▼
+┌──────────────────────┐
+│ Log Sample Data      │  (Logs to nifi-app.log)
+└──────────────────────┘
+```
+
+**Output:** Flow created, IDs saved to `sample_flow_ids.txt`
+
+---
+
+### Task 3: Push/Start Flow
+
+```bash
+./scripts/03_push_flow.sh
+```
+
+**What it does:**
+- ✅ Authenticates with NiFi
+- ✅ Loads processor IDs (or finds all processors)
+- ✅ Starts each processor
+- ✅ Reports status
+
+**Output:** Flow running and processing data
+
+---
+
+## Advanced Usage
+
+### Core Scripts (scripts/core/)
+
+**Create Basic Flow:**
+```bash
+./scripts/core/create_basic_flow.sh
+```
+
+**Create Advanced Flow:**
+```bash
+./scripts/core/create_and_push_flow.sh
+```
+Creates: HTTP → Route → Transform → Store
+
+**Start All Processors:**
+```bash
+./scripts/core/start_processors.sh
+```
+
+### Utility Scripts (scripts/utils/)
+
+**Get Authentication Token:**
+```bash
+TOKEN=$(./scripts/utils/get_token.sh)
+```
+
+**List All Processors:**
+```bash
+./scripts/utils/list_processors.sh
+```
+
+---
+
+## Environment Configuration
+
+1. Copy template:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Edit credentials (optional):
+   ```bash
+   nano .env
+   ```
+
+Default:
 - Username: `admin`
 - Password: `adminadminadmin` (min 12 chars)
+
+---
 
 ## Common Commands
 
@@ -94,19 +160,159 @@ docker-compose down
 # View logs
 docker-compose logs -f nifi
 
-# Get token
-TOKEN=$(./get_token.sh)
+# Restart NiFi
+docker-compose restart nifi
 
-# Use token in API calls
-curl -k -X GET https://localhost:8443/nifi-api/flow/process-groups/root \
+# Complete reset (deletes data)
+docker-compose down -v
+```
+
+---
+
+## Documentation
+
+- **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)** - Complete project organization
+- **[docs/SETUP.md](docs/SETUP.md)** - Detailed setup guide
+- **[docs/BASIC_FLOW_GUIDE.md](docs/BASIC_FLOW_GUIDE.md)** - Flow creation tutorial
+
+---
+
+## Workflow Examples
+
+### Example 1: First Time User
+```bash
+./scripts/01_setup_nifi.sh          # Setup
+./scripts/02_create_sample_flow.sh  # Create flow
+./scripts/03_push_flow.sh           # Start flow
+open https://localhost:8443/nifi    # View in browser
+```
+
+### Example 2: Create Multiple Flows
+```bash
+./scripts/02_create_sample_flow.sh  # Create flow 1
+./scripts/core/create_basic_flow.sh # Create flow 2
+./scripts/03_push_flow.sh           # Start all
+```
+
+### Example 3: Custom Development
+```bash
+TOKEN=$(./scripts/utils/get_token.sh)
+./scripts/utils/list_processors.sh
+# Build custom flow with API calls
+./scripts/03_push_flow.sh
+```
+
+---
+
+## API Integration
+
+All scripts use NiFi REST API:
+
+**Base URL:** `https://localhost:8443/nifi-api`
+
+**Authentication:** JWT Bearer token
+
+**Example:**
+```bash
+# Get token
+TOKEN=$(curl -s -k -X POST \
+  "https://localhost:8443/nifi-api/access/token" \
+  -d "username=admin&password=adminadminadmin")
+
+# List processors
+curl -k -X GET \
+  "https://localhost:8443/nifi-api/process-groups/root/processors" \
   -H "Authorization: Bearer $TOKEN"
 ```
+
+---
+
+## Monitoring
+
+**View NiFi logs:**
+```bash
+docker-compose logs -f nifi
+```
+
+**Check processor stats:**
+```bash
+./scripts/utils/list_processors.sh
+```
+
+**Web UI:**
+```
+https://localhost:8443/nifi
+```
+
+---
 
 ## Requirements
 
 - Docker 20.10+
 - Docker Compose 1.29+
+- jq (JSON processor)
+- curl
+
+**Verify:**
+```bash
+docker --version
+docker-compose --version
+jq --version
+```
+
+---
+
+## Troubleshooting
+
+**NiFi won't start:**
+```bash
+docker-compose logs nifi
+```
+
+**Can't connect to API:**
+```bash
+# Wait 2-3 minutes after starting
+./scripts/01_setup_nifi.sh  # Re-run setup
+```
+
+**Authentication fails:**
+```bash
+# Check credentials in .env
+cat .env
+```
+
+**Reset everything:**
+```bash
+docker-compose down -v
+rm -f sample_flow_ids.txt
+./scripts/01_setup_nifi.sh
+```
+
+---
+
+## Contributing
+
+This project follows professional organization standards:
+
+1. **Scripts** → `scripts/` (numbered tasks) or `scripts/core/`
+2. **Utilities** → `scripts/utils/`
+3. **Documentation** → `docs/`
+4. **Examples** → `examples/`
+
+---
 
 ## License
 
 Apache License 2.0
+
+---
+
+## Quick Reference
+
+| Task | Script | Time |
+|------|--------|------|
+| Setup NiFi | `./scripts/01_setup_nifi.sh` | 2-3 min |
+| Create Flow | `./scripts/02_create_sample_flow.sh` | 5 sec |
+| Start Flow | `./scripts/03_push_flow.sh` | 2 sec |
+
+**Total:** ~3 minutes from zero to running flow! 🚀
