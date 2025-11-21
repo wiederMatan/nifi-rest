@@ -17,6 +17,23 @@ Simple Docker-based Apache NiFi 2.6.0 setup with REST API scripts.
    ```
    Login: `admin` / `adminadminadmin`
 
+## Create a Basic Flow (Easiest Way)
+
+```bash
+./create_basic_flow.sh
+```
+
+This creates a simple flow: GenerateFlowFile → LogAttribute
+
+**Then start it:**
+```bash
+./start_processors.sh
+```
+
+**See complete guide:** [BASIC_FLOW_GUIDE.md](BASIC_FLOW_GUIDE.md)
+
+---
+
 ## API Usage
 
 ### Get Authentication Token
@@ -29,7 +46,7 @@ Simple Docker-based Apache NiFi 2.6.0 setup with REST API scripts.
 ./list_processors.sh
 ```
 
-### Create Flow
+### Create Advanced Flow
 ```bash
 ./create_and_push_flow.sh
 ```
@@ -47,9 +64,12 @@ Edit the script to set your processor IDs first.
 - `.env.example` - Environment variables (copy to `.env`)
 - `get_token.sh` - Get JWT authentication token
 - `list_processors.sh` - List all processors
-- `create_and_push_flow.sh` - Create complete data flow
+- `create_basic_flow.sh` - ⭐ **Create simple basic flow**
+- `start_processors.sh` - Start all processors
+- `create_and_push_flow.sh` - Create advanced data flow
 - `create_connection.sh` - Connect two processors
 - `SETUP.md` - Detailed setup instructions
+- `BASIC_FLOW_GUIDE.md` - Complete flow creation guide
 
 ## Environment Variables
 
