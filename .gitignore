@@ -1,0 +1,17 @@
+# Environment variables with credentials
+.env
+
+# Docker override files
+docker-compose.override.yml
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log

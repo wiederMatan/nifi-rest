@@ -1,0 +1,40 @@
+{
+  "client": "Thunder Client",
+  "collectionName": "NiFi Local",
+  "dateExported": "2025-11-21",
+  "version": "1.1",
+  "variables": [
+    {
+      "name": "base_url",
+      "value": "https://localhost:8443/nifi-api"
+    },
+    {
+      "name": "username",
+      "value": "admin"
+    },
+    {
+      "name": "password",
+      "value": "adminadminadmin"
+    },
+    {
+      "name": "token",
+      "value": ""
+    },
+    {
+      "name": "process_group_id",
+      "value": ""
+    },
+    {
+      "name": "processor_id",
+      "value": ""
+    },
+    {
+      "name": "source_processor_id",
+      "value": ""
+    },
+    {
+      "name": "dest_processor_id",
+      "value": ""
+    }
+  ]
+}
