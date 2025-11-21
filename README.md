@@ -2,7 +2,9 @@
 
 Enterprise-grade Apache NiFi 2.6.0 automation with organized scripts and comprehensive documentation.
 
-## Quick Start (3 Commands)
+## Quick Start
+
+### Option 1: Shell Scripts (3 Commands)
 
 ```bash
 # 1. Setup NiFi Docker container
@@ -15,6 +17,30 @@ Enterprise-grade Apache NiFi 2.6.0 automation with organized scripts and compreh
 ./scripts/03_push_flow.sh
 ```
 
+### Option 2: Python Library (NEW!)
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run commands
+python -m nifi_client.cli setup
+python -m nifi_client.cli create-flow
+python -m nifi_client.cli start-flow
+```
+
+Or use in Python scripts:
+```python
+from nifi_client import NiFiClient, Flow
+
+client = NiFiClient()
+flow = Flow(client)
+flow.create_sample_flow()
+flow.start_all_processors()
+```
+
+See [README_PYTHON.md](README_PYTHON.md) for complete Python documentation.
+
 Then open: https://localhost:8443/nifi (Login: `admin` / `adminadminadmin`)
 
 ---
@@ -23,18 +49,27 @@ Then open: https://localhost:8443/nifi (Login: `admin` / `adminadminadmin`)
 
 ```
 nifi-rest/
-├── scripts/
+├── scripts/                      # Shell scripts (Option 1)
 │   ├── 01_setup_nifi.sh          # TASK 1: First-time setup
 │   ├── 02_create_sample_flow.sh  # TASK 2: Create sample flow
 │   ├── 03_push_flow.sh           # TASK 3: Start/push flow
 │   ├── core/                     # Reusable flow creators
 │   └── utils/                    # Helper utilities
+├── nifi_client/                  # Python library (Option 2)
+│   ├── __init__.py               # Package exports
+│   ├── client.py                 # NiFiClient class
+│   ├── processor.py              # Processor management
+│   ├── flow.py                   # Flow creation
+│   └── cli.py                    # CLI commands
 ├── docs/                         # Documentation
 ├── docker-compose.yml            # NiFi container config
+├── requirements.txt              # Python dependencies
+├── setup.py                      # Python package setup
+├── README_PYTHON.md              # Python library docs
 └── .env.example                  # Environment template
 ```
 
-See [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) for complete details.
+See [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) and [README_PYTHON.md](README_PYTHON.md) for details.
 
 ---
 
