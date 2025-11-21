@@ -50,19 +50,12 @@ GENERATE_RESPONSE=$(curl -s -k -X POST \
     "revision": {"version": 0},
     "component": {
       "type": "org.apache.nifi.processors.standard.GenerateFlowFile",
-      "bundle": {
-        "group": "org.apache.nifi",
-        "artifact": "nifi-standard-nar",
-        "version": "2.6.0"
-      },
       "name": "Generate Sample Data",
       "position": {"x": 300, "y": 200},
       "config": {
         "properties": {
           "File Size": "1KB",
-          "Batch Size": "1",
-          "Data Format": "Text",
-          "Custom Text": "Sample data created at ${now():format('yyyy-MM-dd HH:mm:ss')}"
+          "Batch Size": "1"
         },
         "schedulingPeriod": "60 sec"
       }
@@ -70,6 +63,11 @@ GENERATE_RESPONSE=$(curl -s -k -X POST \
   }')
 
 GENERATE_ID=$(echo "$GENERATE_RESPONSE" | jq -r '.id')
+if [ "$GENERATE_ID" = "null" ] || [ -z "$GENERATE_ID" ]; then
+    echo "❌ Failed to create GenerateFlowFile processor"
+    echo "   Response: $GENERATE_RESPONSE"
+    exit 3
+fi
 echo "✓ GenerateFlowFile created"
 echo "  ID: ${GENERATE_ID}"
 echo ""
@@ -84,11 +82,6 @@ LOG_RESPONSE=$(curl -s -k -X POST \
     "revision": {"version": 0},
     "component": {
       "type": "org.apache.nifi.processors.standard.LogAttribute",
-      "bundle": {
-        "group": "org.apache.nifi",
-        "artifact": "nifi-standard-nar",
-        "version": "2.6.0"
-      },
       "name": "Log Sample Data",
       "position": {"x": 300, "y": 400},
       "config": {
@@ -102,6 +95,11 @@ LOG_RESPONSE=$(curl -s -k -X POST \
   }')
 
 LOG_ID=$(echo "$LOG_RESPONSE" | jq -r '.id')
+if [ "$LOG_ID" = "null" ] || [ -z "$LOG_ID" ]; then
+    echo "❌ Failed to create LogAttribute processor"
+    echo "   Response: $LOG_RESPONSE"
+    exit 3
+fi
 echo "✓ LogAttribute created"
 echo "  ID: ${LOG_ID}"
 echo ""
