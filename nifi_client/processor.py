@@ -4,6 +4,8 @@ NiFi Processor Management
 Class for creating and managing NiFi processors.
 """
 
+import requests
+
 
 class Processor:
     """
@@ -163,10 +165,9 @@ class Processor:
         proc_info = self.get(processor_id)
         revision = proc_info["revision"]["version"]
 
-        # Delete using DELETE request (note: requests library handles this)
-        import requests
+        # Delete using DELETE request
         url = f"{self.client.base_url}/nifi-api/processors/{processor_id}?version={revision}"
         headers = self.client.get_headers()
-        response = requests.delete(url, headers=headers, verify=False)
+        response = requests.delete(url, headers=headers, verify=self.client.verify_ssl, timeout=30)
         response.raise_for_status()
         return response.json()

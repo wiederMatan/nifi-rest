@@ -1,6 +1,10 @@
 # Environment variables with credentials
 .env
 
+# Generated files (instance-specific)
+sample_flow_ids.txt
+*_flow_ids.txt
+
 # Docker override files
 docker-compose.override.yml
 
