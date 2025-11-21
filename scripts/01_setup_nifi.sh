@@ -60,8 +60,8 @@ ATTEMPT=0
 while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
     ATTEMPT=$((ATTEMPT + 1))
 
-    # Try to connect to NiFi API
-    if curl -k -s -f "${NIFI_URL}/nifi-api/system-diagnostics" > /dev/null 2>&1; then
+    # Try to connect to NiFi web UI (doesn't require auth)
+    if curl -k -s -f "${NIFI_URL}/nifi/" > /dev/null 2>&1; then
         echo "✓ NiFi is ready!"
         break
     fi
